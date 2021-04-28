@@ -16,12 +16,6 @@ Supporting warping spaces:
 * Tested with python 3.9.4, cuda 11.1.1, cudnn 8.1.0.77, pytorch 1.8.1, torchvision 0.9.1 
 * All other dependency can be installed using requirements.txt `$pip install -r requirements.txt`
 
-## How to Install
-```
-git clone https://github.com/ibug-group/face_embedding.git
-cd face_embedding
-git lfs pull
-```
 Let $ROOT denotes this project's root directory where this README resides
 
 ## How to Test 
