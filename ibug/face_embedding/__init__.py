@@ -1,0 +1,1 @@
+from .face_embedding_predictor import FaceEmbeddingPredictor

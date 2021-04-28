@@ -1,0 +1,15 @@
+## python 3.9
+## if no cuda, first install cuda and cudnn by conda:
+# conda install -c conda-forge cudatoolkit=11.1.1
+# conda install -c conda-forge cudnn=8.1.0.77
+# conda install pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch -c conda-forge
+opencv-python
+matplotlib
+scikit-image
+scikit-learn
+easydict
+mxnet
+prettytable
+cython
+menpo
+seaborn
