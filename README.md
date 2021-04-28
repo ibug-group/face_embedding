@@ -3,14 +3,14 @@ A collection of pre-trained face embedding models based on ArcFace [1] and RoI T
 
 The embedding predictor supports the following backbones (iResNet is a variant of ResNet [3]):
 * iResNet-18  
-* iResNet-50 (model to be uploaded)
-* RTNet [2] (model to be uploaded)
+* iResNet-50 
+* RTNet [2] 
 
 Supporting warping spaces:
 * Cartesian (No projection)
-* RoI Tanh Polar (model to be uploaded)
+* RoI Tanh Polar 
 * RoI Tanh
-* RoI Tanh Circular (model to be uploaded)
+* RoI Tanh Circular 
 
 ## Prerequisites
 * Tested with python 3.9.4, cuda 11.1.1, cudnn 8.1.0.77, pytorch 1.8.1, torchvision 0.9.1 
