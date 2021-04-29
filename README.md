@@ -20,7 +20,7 @@ Let $ROOT denotes this project's root directory where this README resides
 
 ## How to Test 
 * ibug.face_detection is required for testing the embedding predictor
-* Download the [pretrained models](https://drive.google.com/file/d/10AvHiTjs3Um7Qau2GZO-qPr3g5ahqly4/view?usp=sharing), extract and place as following:
+* Download the [pretrained models](https://drive.google.com/file/d/1sPfON1y5O1hDfeotp5UwD_x4ZP3kNyA1/view?usp=sharing), extract and place as following:
 ```
 ├── $ROOT
 │   ├── ibug
