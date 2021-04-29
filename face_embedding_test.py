@@ -15,28 +15,28 @@ def get_args():
     parser = ArgumentParser()
     parser.add_argument('--input1', help='Path of verification image 1', default=path1)
     parser.add_argument('--input2', help='Path of verification image 2', default=path2)
-    parser.add_argument('--threshold', '-t', help='Face verification threshold(default=1.66)',
+    parser.add_argument('--threshold', '-t', help='Face verification threshold (default: 1.66)',
                         type=float, default=1.66)
     parser.add_argument('--backbone', '-b',
-                        help='Backbone for embedding. Supported backbones: {}'.format(
+                        help='Backbone for embedding. Supported backbones: {} (default: iresnet18)'.format(
                             FaceEmbeddingPredictor.support_backbones),
                         default='iresnet18')
     parser.add_argument('--project_to_space', '-p',
-                        help='The space to project the image into. Supported spaces: {}'.format(
+                        help='The space to project the image into. Supported spaces: {} (default: None)'.format(
                             FaceEmbeddingPredictor.support_spaces[1:]),
                         default=None)
     parser.add_argument('--align_face', '-a',
                         type=int,
-                        help='If 1, will align the face based on 5 landmarks. If 0, will not align',
+                        help='If 1, will align the face based on 5 landmarks. If 0, will not align. (default: 1)',
                         default=1)
     parser.add_argument('--flip', '-f',
                         type=int,
-                        help='If 1, will additionally flip image during embedding. If 0, will not',
+                        help='If 1, will additionally flip image during embedding. If 0, will not. (default: 1)',
                         default=1)
     parser.add_argument('--model_path', '-m',
-                        help='Weights to load. If not specified, will load weights from pre-defined path',
+                        help='Weights to load. If not specified, will load weights from pre-defined path. (default: None)',
                         default=None)
-    parser.add_argument('--device', '-d', help='Device to be used by the model (default=cuda:0)',
+    parser.add_argument('--device', '-d', help='Device to be used by the model (default: cuda:0)',
                         default='cuda:0')
     args = parser.parse_args()
     return args
@@ -80,7 +80,7 @@ def main():
         face1 = crop_face(img1, bbox1, extend=0.2, target_size=image_size)
         face2 = crop_face(img2, bbox2, extend=0.2, target_size=image_size)
 
-    print('Loading embedding predictor')
+    print('Loading embedding predictor with backbone: {}'.format(args.backbone))
     embedding_predictor = FaceEmbeddingPredictor(
         backbone=args.backbone,
         project_to_space=args.project_to_space,
@@ -98,7 +98,7 @@ def main():
     dist = np.sum(np.square(diff))
 
     end_time = time.time()
-    print("Embedding time: {:.3f} sec".format(end_time - start_time))
+    print("Verification time: {:.3f} sec".format(end_time - start_time))
 
     if dist < args.threshold:
         print("Embedding distance ({:.2f}) < Threshold ({:.2f})".format(dist, args.threshold))

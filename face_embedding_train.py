@@ -68,7 +68,8 @@ def main(args):
         backbone = eval("iresnet.{}".format(net_type))(False, dropout=dropout, fp16=cfg.fp16).to(local_rank)
         print("Using iRseNet backbone: {}".format(net_type))
     elif "rtnet" in net_type:  # use rtnet serials as backbone
-        backbone = eval("rtnet.{}".format(net_type))(False, dropout=dropout, fp16=cfg.fp16).to(local_rank)
+        backbone = eval("rtnet.{}".format(net_type))(
+            False, dropout=dropout, fp16=cfg.fp16, dilated=False).to(local_rank)
         print("Using RTNet backbone: {}".format(net_type))
     else:
         raise ValueError('Unsupported network options: {}'.format(net_type))
@@ -159,6 +160,7 @@ def main(args):
             loss.update(loss_v, 1)
             callback_logging(global_step, loss, epoch, cfg.fp16, grad_scaler)
             callback_verification(global_step, backbone)
+
         callback_checkpoint(global_step, backbone, module_partial_fc)
         scheduler_backbone.step()
         scheduler_pfc.step()

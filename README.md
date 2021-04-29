@@ -4,7 +4,7 @@ A collection of pre-trained face embedding models based on ArcFace [1] and RoI T
 The embedding predictor supports the following backbones (iResNet is a variant of ResNet [3]):
 * iResNet-18  
 * iResNet-50 
-* RTNet [2] 
+* RTNet-50 [2] (pretrained model will be updated) 
 
 Supporting warping spaces:
 * Cartesian (No projection)

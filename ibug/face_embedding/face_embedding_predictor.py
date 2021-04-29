@@ -54,13 +54,13 @@ class FaceEmbeddingPredictor(object):
         elif self.backbone == "iresnet50":
             self.net = iresnet50(False).to(self.device)
         elif self.backbone == "rtnet50":
-            self.net = rtnet50(False).to(self.device)
+            self.net = rtnet50(False, dilated=False).to(self.device)
             assert self.project_to_space == "roi_tanh_polar", \
                 "For rtnet backbone, project_to_space should be set to roi_tanh_polar"
         else:
             raise ValueError("Do not support backbone: {}".format(self.backbone))
 
-        print("Using backbone: {}".format(self.backbone))
+        # print("Using backbone: {}".format(self.backbone))
 
         if model_path is not None:
             model_path = model_path.strip()

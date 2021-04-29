@@ -170,7 +170,7 @@ class RTNet(nn.Module):
         Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.
         - Yu, Fisher, and Vladlen Koltun. "Multi-scale context aggregation by dilated convolutions."
     """
-    fc_scale = 14 * 14
+    fc_scale = 4 * 4  # fc layer scale for dilated=False
     def __init__(self, block, layers, groups=1, bottleneck_width=32, dilated=True, dilation=1,
                  deep_stem=False, stem_width=64, avg_down=False, hybrid_stages=[True, True, True],
                  avd=False, norm_layer=nn.BatchNorm2d, zero_init_residual=True,
@@ -340,4 +340,14 @@ def rtnet50(pretrained=False, **kwargs):
 
     return model
 
+
+def rtnet101(pretrained=False, **kwargs):
+    """Constructs a RTNet-101 model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = RTNet(HybridBlock, [3, 4, 23, 3],
+                  deep_stem=False, stem_width=64, avg_down=False,
+                  avd=False, **kwargs)
+    return model
 
