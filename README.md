@@ -50,7 +50,7 @@ $data_root/Brendan_Fraser/[...]/asd932_.png
 
 * Download the [verification data](https://drive.google.com/file/d/116CLHSfV_lUtXIeKvaJ0M0ycZ2dBv9pU/view?usp=sharing) and unzip it to a directory `$ver_dir`
 
-* In `./train.sh`, replace `$data_root` and `$ver_dir` with training and verification data paths, and also change `$output_dir` which to the path for saving training data. Then run it:
+* In `./train.sh`, replace `$data_root` and `$ver_dir` with training and verification data paths, and also change `$output_dir` to the path of saving training data. Then run it:
 ```
 bash train.sh
 ```
