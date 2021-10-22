@@ -9,6 +9,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from .space_warper import WarpingImageToDifferentSpace
+from torchvision.datasets import ImageFolder
 
 
 class BackgroundGenerator(threading.Thread):
@@ -168,3 +169,46 @@ class MXFaceDataset(Dataset):
 
     def __len__(self):
         return len(self.imgidx)
+
+
+class ImageFolderFaceDataset(Dataset):
+
+    def __init__(
+            self,
+            root_dir,
+            local_rank,):
+        """
+        The face dataset class for image folders
+
+        Args:
+            root_dir: the root directory of the dataset that can be read by torchvision.datasets.ImageFolder
+            local_rank: the local rank
+        """
+
+        super(ImageFolderFaceDataset, self).__init__()
+
+        self.root_dir = root_dir
+        self.local_rank = local_rank
+
+        self.transform = transforms.Compose(
+            [transforms.RandomHorizontalFlip(),
+             transforms.ToTensor(),
+             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+             ])
+
+        self.image_dataset = ImageFolder(root_dir)
+
+
+    def __getitem__(self, index):
+
+        sample, label = self.image_dataset[index]
+
+        sample = self.transform(sample)
+        label = torch.tensor(label, dtype=torch.long)
+
+        return sample, label
+
+
+    def __len__(self):
+        return len(self.image_dataset)
+
