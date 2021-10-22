@@ -36,14 +36,25 @@ bash test.sh
 ```
 
 ## How to Train
-* Download _MS1M-ArcFace_ dataset from [ArcFace Dataset-Zoo](https://github.com/deepinsight/insightface/wiki/Dataset-Zoo).
-* Extract the downloaded dataset. In `$ROOT/ibug/face_embedding/utils/train_config.py`, modify `config.rec` at line 15 to be the root directory of the extracted dataset. 
-* An example training session can be run:
+* Organize the training data as "ImageFolder" format that can be read by `torchvision.datasets.ImageFolder`. Example "ImageFolder" structure:
 ```
-cd $ROOT
+$data_root/Adam_Brody/xxx.png
+$data_root/Adam_Brody/xxy.png
+$data_root/Adam_Brody/[...]/xxz.png
+...
+$data_root/Brendan_Fraser/123.png
+$data_root/Brendan_Fraser/nsdf3.png
+$data_root/Brendan_Fraser/[...]/asd932_.png
+```
+`$data_root` stands for the dataset root directory.
+
+* Download the [verification data](https://drive.google.com/file/d/116CLHSfV_lUtXIeKvaJ0M0ycZ2dBv9pU/view?usp=sharing) and unzip it to a directory `$ver_dir`
+
+* In `./train.sh`, replace `$data_root` and `$ver_dir` with training and verification data paths, and also change `$output_dir` which to the path for saving training data. Then run it:
+```
 bash train.sh
 ```
-The output data will be saved in `$ROOT/../fr_snapshots/arcface_emore_root`, which can be changed by modifying `config.output` in the same `train_config.py`. 
+
 
 ## References
 \[1\] Deng, Jiankang, Jia Guo, Niannan Xue, and Stefanos Zafeiriou. "Arcface: Additive angular margin loss for deep face recognition." In _Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition_, pp. 4690-4699. 2019.
