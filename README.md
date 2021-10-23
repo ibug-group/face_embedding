@@ -46,7 +46,7 @@ $data_root/Brendan_Fraser/123.png
 $data_root/Brendan_Fraser/nsdf3.png
 $data_root/Brendan_Fraser/[...]/asd932_.png
 ```
-`$data_root` stands for the dataset root directory.
+`$data_root` stands for the dataset root directory. An example training dataset: 
 
 * Download the [verification data](https://drive.google.com/file/d/116CLHSfV_lUtXIeKvaJ0M0ycZ2dBv9pU/view?usp=sharing) and unzip it to a directory `$ver_dir`
 

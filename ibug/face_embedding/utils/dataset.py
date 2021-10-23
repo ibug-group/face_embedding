@@ -3,7 +3,7 @@ import os
 import queue as Queue
 import threading
 
-import mxnet as mx
+# import mxnet as mx
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -70,105 +70,105 @@ class DataLoaderX(DataLoader):
         return batch
 
 
-class MXFaceDataset(Dataset):
-
-    def __init__(
-            self,
-            root_dir,
-            local_rank,
-            project_to_space=None,
-            augment_projection=True,
-            roi_ratio=(0.8, 0.8,),
-            roi_offset_range=(-0.09, 0.09,),
-            angular_offset_range=(-0.35, 0.35,),
-            keep_aspect_ratio=True):
-        """
-        The MXNet face dataset class
-
-        Args:
-            root_dir: the root directory of the dataset files
-            local_rank: the local rank
-            project_to_space: the space to project the image into.
-                If None, no projection will be used (keep the original space)
-                Supported space: "roi_tanh_polar","roi_tanh_circular", "roi_tanh"
-            aument_projection: whether to use augmentation for space projection.
-                If True, random offsets will be added to RoI regions and also the angular offset
-                If False, no random offsets will be added
-        """
-
-        super(MXFaceDataset, self).__init__()
-        self.root_dir = root_dir
-        self.local_rank = local_rank
-        path_imgrec = os.path.join(root_dir, 'train.rec')
-        path_imgidx = os.path.join(root_dir, 'train.idx')
-        self.imgrec = mx.recordio.MXIndexedRecordIO(path_imgidx, path_imgrec, 'r')
-        s = self.imgrec.read_idx(0)
-        header, _ = mx.recordio.unpack(s)
-        if header.flag > 0:
-            self.header0 = (int(header.label[0]), int(header.label[1]))
-            self.imgidx = np.array(range(1, int(header.label[0])))
-        else:
-            self.imgidx = np.array(list(self.imgrec.keys))
-
-        self.do_projection = False if project_to_space is None else True
-        if project_to_space is not None:  # project image into corresponding, e.g. "RoI Tanh Polar"
-            _, img = mx.recordio.unpack(self.imgrec.read_idx(1))
-            sample = mx.image.imdecode(img).asnumpy()
-            img_size = sample.shape[0:2]  # get image size in the dataset
-
-            # transformation of projecting image into a certain space
-            self.project_to_target_space = WarpingImageToDifferentSpace(
-                img_size,
-                img_size,
-                target_space= project_to_space,
-                is_training=augment_projection,
-                roi_ratio=roi_ratio,
-                roi_offset_range=roi_offset_range,
-                angular_offset_range=angular_offset_range,
-                keep_aspect_ratio=keep_aspect_ratio,
-                squeeze_output=True)
-
-            print('During training, images will be projected into {} space'.format(project_to_space))
-            print("Projection options - RoI Ratio: {}, RoI offset range: {}, "
-                  "Angular offset range: {}, Keep Aspect Ratio: {}".format(
-                roi_ratio, roi_offset_range, angular_offset_range, keep_aspect_ratio))
-
-            self.transform = transforms.Compose(
-                [transforms.ToPILImage(),
-                 transforms.RandomHorizontalFlip(),
-                 transforms.ToTensor(),
-                 self.project_to_target_space,   # project into target space
-                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-                 ])
-
-        else:  # the original transformations
-            self.transform = transforms.Compose(
-                [transforms.ToPILImage(),
-                 transforms.RandomHorizontalFlip(),
-                 transforms.ToTensor(),
-                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-                 ])
-
-    def __getitem__(self, index):
-        idx = self.imgidx[index]
-        s = self.imgrec.read_idx(idx)
-        header, img = mx.recordio.unpack(s)
-        label = header.label
-        if not isinstance(label, numbers.Number):
-            label = label[0]
-        label = torch.tensor(label, dtype=torch.long)
-        sample = mx.image.imdecode(img).asnumpy()
-        if self.transform is not None:
-            sample = self.transform(sample)
-
-        if self.do_projection:
-            rois = self.project_to_target_space.this_roi.squeeze()
-            return sample, label, rois  # also return RoI for information
-        else:
-            return sample, label
-
-    def __len__(self):
-        return len(self.imgidx)
+# class MXFaceDataset(Dataset):
+#
+#     def __init__(
+#             self,
+#             root_dir,
+#             local_rank,
+#             project_to_space=None,
+#             augment_projection=True,
+#             roi_ratio=(0.8, 0.8,),
+#             roi_offset_range=(-0.09, 0.09,),
+#             angular_offset_range=(-0.35, 0.35,),
+#             keep_aspect_ratio=True):
+#         """
+#         The MXNet face dataset class
+#
+#         Args:
+#             root_dir: the root directory of the dataset files
+#             local_rank: the local rank
+#             project_to_space: the space to project the image into.
+#                 If None, no projection will be used (keep the original space)
+#                 Supported space: "roi_tanh_polar","roi_tanh_circular", "roi_tanh"
+#             aument_projection: whether to use augmentation for space projection.
+#                 If True, random offsets will be added to RoI regions and also the angular offset
+#                 If False, no random offsets will be added
+#         """
+#
+#         super(MXFaceDataset, self).__init__()
+#         self.root_dir = root_dir
+#         self.local_rank = local_rank
+#         path_imgrec = os.path.join(root_dir, 'train.rec')
+#         path_imgidx = os.path.join(root_dir, 'train.idx')
+#         self.imgrec = mx.recordio.MXIndexedRecordIO(path_imgidx, path_imgrec, 'r')
+#         s = self.imgrec.read_idx(0)
+#         header, _ = mx.recordio.unpack(s)
+#         if header.flag > 0:
+#             self.header0 = (int(header.label[0]), int(header.label[1]))
+#             self.imgidx = np.array(range(1, int(header.label[0])))
+#         else:
+#             self.imgidx = np.array(list(self.imgrec.keys))
+#
+#         self.do_projection = False if project_to_space is None else True
+#         if project_to_space is not None:  # project image into corresponding, e.g. "RoI Tanh Polar"
+#             _, img = mx.recordio.unpack(self.imgrec.read_idx(1))
+#             sample = mx.image.imdecode(img).asnumpy()
+#             img_size = sample.shape[0:2]  # get image size in the dataset
+#
+#             # transformation of projecting image into a certain space
+#             self.project_to_target_space = WarpingImageToDifferentSpace(
+#                 img_size,
+#                 img_size,
+#                 target_space= project_to_space,
+#                 is_training=augment_projection,
+#                 roi_ratio=roi_ratio,
+#                 roi_offset_range=roi_offset_range,
+#                 angular_offset_range=angular_offset_range,
+#                 keep_aspect_ratio=keep_aspect_ratio,
+#                 squeeze_output=True)
+#
+#             print('During training, images will be projected into {} space'.format(project_to_space))
+#             print("Projection options - RoI Ratio: {}, RoI offset range: {}, "
+#                   "Angular offset range: {}, Keep Aspect Ratio: {}".format(
+#                 roi_ratio, roi_offset_range, angular_offset_range, keep_aspect_ratio))
+#
+#             self.transform = transforms.Compose(
+#                 [transforms.ToPILImage(),
+#                  transforms.RandomHorizontalFlip(),
+#                  transforms.ToTensor(),
+#                  self.project_to_target_space,   # project into target space
+#                  transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+#                  ])
+#
+#         else:  # the original transformations
+#             self.transform = transforms.Compose(
+#                 [transforms.ToPILImage(),
+#                  transforms.RandomHorizontalFlip(),
+#                  transforms.ToTensor(),
+#                  transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+#                  ])
+#
+#     def __getitem__(self, index):
+#         idx = self.imgidx[index]
+#         s = self.imgrec.read_idx(idx)
+#         header, img = mx.recordio.unpack(s)
+#         label = header.label
+#         if not isinstance(label, numbers.Number):
+#             label = label[0]
+#         label = torch.tensor(label, dtype=torch.long)
+#         sample = mx.image.imdecode(img).asnumpy()
+#         if self.transform is not None:
+#             sample = self.transform(sample)
+#
+#         if self.do_projection:
+#             rois = self.project_to_target_space.this_roi.squeeze()
+#             return sample, label, rois  # also return RoI for information
+#         else:
+#             return sample, label
+#
+#     def __len__(self):
+#         return len(self.imgidx)
 
 
 class ImageFolderFaceDataset(Dataset):
